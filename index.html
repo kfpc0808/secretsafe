@@ -77,6 +77,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  /* iOS 안전영역 — 노치/홈바 회피 */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 @media (min-width: 768px) {
@@ -244,13 +247,26 @@ section {
 
 /* 햄버거가 X로 변환 (메뉴 열렸을 때) */
 body.menu-open .nav-toggle span:nth-child(1) {
-  transform: translateY(3px) rotate(45deg);
+  transform: translateY(6px) rotate(45deg);
 }
 body.menu-open .nav-toggle span:nth-child(2) {
   opacity: 0;
 }
 body.menu-open .nav-toggle span:nth-child(3) {
-  transform: translateY(-3px) rotate(-45deg);
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* 모바일 메뉴 열렸을 때 nav 배경 깔끔하게 — 그라데이션 띠 제거 */
+body.menu-open .nav {
+  background: transparent;
+  border-bottom-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* 메뉴 열렸을 때 브랜드 텍스트도 살짝 흐리게 (햄버거 X에 집중) */
+body.menu-open .nav-brand {
+  opacity: 0.4;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -269,6 +285,7 @@ body.menu-open .nav-toggle span:nth-child(3) {
   visibility: hidden;
   transition: opacity 400ms var(--ease), visibility 400ms;
   padding: var(--space-5) var(--space-3);
+  overflow-y: auto;
 }
 
 /* 글로우 배경 */
@@ -298,13 +315,16 @@ body.menu-open { overflow: hidden; }
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 4px;
+  padding: 0;
+  margin: 0;
 }
 
 .mobile-menu-item {
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 600ms var(--ease), transform 600ms var(--ease);
+  text-align: center;
 }
 
 body.menu-open .mobile-menu-item {
@@ -318,37 +338,45 @@ body.menu-open .mobile-menu-item:nth-child(3) { transition-delay: 290ms; }
 body.menu-open .mobile-menu-item:nth-child(4) { transition-delay: 360ms; }
 body.menu-open .mobile-menu-item:nth-child(5) { transition-delay: 430ms; }
 
+/* 메뉴 항목 — 로마숫자 + 메뉴명을 같이 가운데 정렬 */
 .mobile-menu-link {
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   font-family: var(--serif);
   font-style: italic;
-  font-size: 36px;
+  font-size: 30px;
   font-weight: 400;
   color: var(--warm);
   text-decoration: none;
   letter-spacing: 0.01em;
-  padding: 8px 24px;
+  padding: 12px 32px;
   transition: color 250ms var(--ease);
-  position: relative;
+  line-height: 1.2;
+  min-width: 200px;
 }
 
+/* 로마숫자 — 메뉴명 위에 작게 */
 .mobile-menu-link::before {
   content: attr(data-num);
-  position: absolute;
-  top: 4px;
-  left: 0;
+  display: block;
   font-family: var(--serif);
-  font-size: 12px;
+  font-size: 11px;
   font-style: italic;
   color: var(--gold);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.3em;
   font-weight: 400;
-  transform: translateX(-100%);
-  padding-right: 8px;
+  text-transform: uppercase;
+  opacity: 0.85;
 }
 
-.mobile-menu-link:hover {
+.mobile-menu-link:hover, .mobile-menu-link:active {
   color: var(--gold);
+}
+
+@media (min-width: 400px) {
+  .mobile-menu-link { font-size: 36px; }
 }
 
 .mobile-menu-footer {
@@ -377,7 +405,7 @@ body.menu-open .mobile-menu-item:nth-child(5) { transition-delay: 430ms; }
    ═══════════════════════════════════════════════════════════ */
 .to-top {
   position: fixed;
-  bottom: var(--space-3);
+  bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
   right: var(--space-3);
   width: 48px;
   height: 48px;
@@ -404,6 +432,12 @@ body.menu-open .mobile-menu-item:nth-child(5) { transition-delay: 430ms; }
   transform: translateY(0);
 }
 
+/* 모바일 메뉴 열렸을 때 위로 버튼 숨김 */
+body.menu-open .to-top {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
 .to-top:hover {
   background: var(--gold);
   border-color: var(--gold);
@@ -423,7 +457,7 @@ body.menu-open .mobile-menu-item:nth-child(5) { transition-delay: 430ms; }
 
 @media (min-width: 768px) {
   .to-top {
-    bottom: var(--space-4);
+    bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
     right: var(--space-4);
     width: 52px;
     height: 52px;
@@ -1050,6 +1084,8 @@ body.menu-open .mobile-menu-item:nth-child(5) { transition-delay: 430ms; }
   max-width: 640px;
   border: 1px solid var(--bg-line);
   background: rgba(15,20,36,0.5);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .billing-table-title {
@@ -1126,11 +1162,16 @@ body.menu-open .mobile-menu-item:nth-child(5) { transition-delay: 430ms; }
 .compare-wrap {
   margin-top: var(--space-4);
   border: 1px solid var(--bg-line);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  /* 모바일 가로 스크롤 가능 시각 힌트 */
+  background: linear-gradient(to right, transparent 0%, transparent calc(100% - 30px), rgba(10,14,26,0.4) 100%) right / 30px 100% no-repeat;
 }
 
 .compare-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 360px;
 }
 
 .compare-table th, .compare-table td {
