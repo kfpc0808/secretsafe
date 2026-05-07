@@ -122,42 +122,313 @@ section {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Top Mark — 미니 헤더
+   Navigation — 상단 메뉴
    ═══════════════════════════════════════════════════════════ */
-.topmark {
+.nav {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  padding: var(--space-2) var(--space-3);
-  background: linear-gradient(to bottom, rgba(10,14,26,0.95) 0%, rgba(10,14,26,0) 100%);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  padding: 18px var(--space-3);
+  background: linear-gradient(to bottom, rgba(10,14,26,0.6) 0%, rgba(10,14,26,0) 100%);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  transition: background 350ms var(--ease), backdrop-filter 350ms var(--ease), padding 350ms var(--ease), border-color 350ms var(--ease);
+  border-bottom: 1px solid transparent;
 }
 
-.topmark .brand {
+/* 스크롤 시 — 배경 진해지고 블러 적용 */
+.nav.scrolled {
+  background: rgba(10, 14, 26, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 14px var(--space-3);
+  border-bottom-color: var(--bg-line);
+}
+
+.nav-brand {
   font-family: var(--serif);
   font-style: italic;
-  font-size: 16px;
+  font-size: 18px;
   letter-spacing: 0.02em;
-  text-transform: none;
+  color: var(--gold);
+  text-decoration: none;
+  transition: color 250ms var(--ease);
+  flex-shrink: 0;
+}
+
+.nav-brand:hover { color: var(--warm); }
+
+/* 데스크탑 메뉴 (768px 이상에서만 보임) */
+.nav-menu {
+  display: none;
+  list-style: none;
+  gap: 4px;
+}
+
+.nav-menu li { display: inline-flex; }
+
+.nav-link {
+  display: inline-block;
+  padding: 8px 18px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--warm-mute);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 250ms var(--ease);
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 18px;
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 350ms var(--ease);
+}
+
+.nav-link:hover {
   color: var(--gold);
 }
 
-.topmark .powered {
-  color: var(--warm-dim);
-  font-size: 11px;
+.nav-link:hover::after {
+  width: calc(100% - 36px);
 }
 
 @media (min-width: 768px) {
-  .topmark { padding: var(--space-3) var(--space-4); }
-  .topmark .brand { font-size: 18px; }
-  .topmark .powered { font-size: 12px; }
+  .nav { padding: 20px var(--space-4); }
+  .nav.scrolled { padding: 14px var(--space-4); }
+  .nav-brand { font-size: 20px; }
+  .nav-menu { display: flex; }
+}
+
+/* 햄버거 버튼 — 모바일에서만 보임 */
+.nav-toggle {
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid var(--bg-line);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  transition: border-color 250ms var(--ease);
+  position: relative;
+}
+
+.nav-toggle:hover { border-color: var(--gold-deep); }
+
+.nav-toggle span {
+  display: block;
+  width: 18px;
+  height: 1px;
+  background: var(--gold);
+  transition: transform 350ms var(--ease), opacity 250ms var(--ease);
+  transform-origin: center;
+}
+
+@media (min-width: 768px) {
+  .nav-toggle { display: none; }
+}
+
+/* 햄버거가 X로 변환 (메뉴 열렸을 때) */
+body.menu-open .nav-toggle span:nth-child(1) {
+  transform: translateY(3px) rotate(45deg);
+}
+body.menu-open .nav-toggle span:nth-child(2) {
+  opacity: 0;
+}
+body.menu-open .nav-toggle span:nth-child(3) {
+  transform: translateY(-3px) rotate(-45deg);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Mobile Menu Overlay — 풀스크린
+   ═══════════════════════════════════════════════════════════ */
+.mobile-menu {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg-deep);
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 400ms var(--ease), visibility 400ms;
+  padding: var(--space-5) var(--space-3);
+}
+
+/* 글로우 배경 */
+.mobile-menu::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 600px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(201,169,110,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+body.menu-open .mobile-menu {
+  opacity: 1;
+  visibility: visible;
+}
+
+body.menu-open { overflow: hidden; }
+
+.mobile-menu-list {
+  list-style: none;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mobile-menu-item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 600ms var(--ease), transform 600ms var(--ease);
+}
+
+body.menu-open .mobile-menu-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.menu-open .mobile-menu-item:nth-child(1) { transition-delay: 150ms; }
+body.menu-open .mobile-menu-item:nth-child(2) { transition-delay: 220ms; }
+body.menu-open .mobile-menu-item:nth-child(3) { transition-delay: 290ms; }
+body.menu-open .mobile-menu-item:nth-child(4) { transition-delay: 360ms; }
+body.menu-open .mobile-menu-item:nth-child(5) { transition-delay: 430ms; }
+
+.mobile-menu-link {
+  display: inline-block;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--warm);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  padding: 8px 24px;
+  transition: color 250ms var(--ease);
+  position: relative;
+}
+
+.mobile-menu-link::before {
+  content: attr(data-num);
+  position: absolute;
+  top: 4px;
+  left: 0;
+  font-family: var(--serif);
+  font-size: 12px;
+  font-style: italic;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  font-weight: 400;
+  transform: translateX(-100%);
+  padding-right: 8px;
+}
+
+.mobile-menu-link:hover {
+  color: var(--gold);
+}
+
+.mobile-menu-footer {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--warm-dim);
+  text-transform: uppercase;
+}
+
+.mobile-menu-footer .gold { color: var(--gold); }
+
+.mobile-menu-divider {
+  width: 30px;
+  height: 1px;
+  background: var(--gold-deep);
+  margin: 0 auto var(--space-2);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Back to Top — 우하단 위로 버튼
+   ═══════════════════════════════════════════════════════════ */
+.to-top {
+  position: fixed;
+  bottom: var(--space-3);
+  right: var(--space-3);
+  width: 48px;
+  height: 48px;
+  background: rgba(10, 14, 26, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--gold-deep);
+  cursor: pointer;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 350ms var(--ease), visibility 350ms, transform 350ms var(--ease), background 250ms var(--ease), border-color 250ms var(--ease);
+  padding: 0;
+}
+
+.to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.to-top:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.to-top:hover svg { color: var(--bg-deep); }
+
+.to-top svg {
+  width: 18px;
+  height: 18px;
+  transition: color 250ms var(--ease), transform 350ms var(--ease);
+}
+
+.to-top:hover svg {
+  transform: translateY(-2px);
+}
+
+@media (min-width: 768px) {
+  .to-top {
+    bottom: var(--space-4);
+    right: var(--space-4);
+    width: 52px;
+    height: 52px;
+  }
+  .to-top svg { width: 20px; height: 20px; }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1291,12 +1562,55 @@ footer {
 <body>
 
 <!-- ═══════════════════════════════════════════════════════════
-     Top Mark
+     Navigation — 데스크탑 메뉴 + 모바일 햄버거
      ═══════════════════════════════════════════════════════════ -->
-<div class="topmark">
-  <span class="brand">My Secret Safe</span>
-  <span class="powered">POWERED BY <span style="color: var(--gold);">JARVIA</span></span>
+<nav class="nav" id="nav" role="navigation" aria-label="메인 메뉴">
+  <a href="#top" class="nav-brand">My Secret Safe</a>
+
+  <!-- 데스크탑 메뉴 -->
+  <ul class="nav-menu">
+    <li><a class="nav-link" href="#why">철학</a></li>
+    <li><a class="nav-link" href="#promise">약속</a></li>
+    <li><a class="nav-link" href="#how">작동 원리</a></li>
+    <li><a class="nav-link" href="#consultant">컨설턴트</a></li>
+    <li><a class="nav-link" href="#beta">베타</a></li>
+  </ul>
+
+  <!-- 모바일 햄버거 -->
+  <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════
+     Mobile Menu — 풀스크린 오버레이
+     ═══════════════════════════════════════════════════════════ -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="모바일 메뉴" aria-hidden="true">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item"><a class="mobile-menu-link" href="#why" data-num="i.">철학</a></li>
+    <li class="mobile-menu-item"><a class="mobile-menu-link" href="#promise" data-num="ii.">약속</a></li>
+    <li class="mobile-menu-item"><a class="mobile-menu-link" href="#how" data-num="iii.">작동 원리</a></li>
+    <li class="mobile-menu-item"><a class="mobile-menu-link" href="#consultant" data-num="iv.">컨설턴트</a></li>
+    <li class="mobile-menu-item"><a class="mobile-menu-link" href="#beta" data-num="v.">베타</a></li>
+  </ul>
+
+  <div class="mobile-menu-footer">
+    <div class="mobile-menu-divider"></div>
+    POWERED BY <span class="gold">JARVIA</span>
+  </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     Back to Top Button — 우하단 위로 이동
+     ═══════════════════════════════════════════════════════════ -->
+<button class="to-top" id="toTop" aria-label="맨 위로 이동" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <line x1="12" y1="19" x2="12" y2="5"/>
+    <polyline points="5 12 12 5 19 12"/>
+  </svg>
+</button>
 
 <!-- ═══════════════════════════════════════════════════════════
      1. HERO
@@ -1885,6 +2199,84 @@ const observer = new IntersectionObserver(entries => {
 reveals.forEach(el => observer.observe(el));
 
 // ═══════════════════════════════════════════════════════════
+// Navigation — 스크롤 시 헤더 스타일 변화 + 위로 버튼 노출
+// ═══════════════════════════════════════════════════════════
+const nav = document.getElementById('nav');
+const toTop = document.getElementById('toTop');
+
+function handleScroll() {
+  const scrollY = window.scrollY;
+
+  // 헤더 스타일 — 100px 이상 스크롤 시 진해짐
+  if (scrollY > 100) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+
+  // 위로 버튼 — 600px 이상 스크롤 시 노출
+  if (scrollY > 600) {
+    toTop.classList.add('visible');
+  } else {
+    toTop.classList.remove('visible');
+  }
+}
+
+// 스크롤 이벤트 (성능 최적화: requestAnimationFrame 사용)
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    window.requestAnimationFrame(() => {
+      handleScroll();
+      ticking = false;
+    });
+    ticking = true;
+  }
+}, { passive: true });
+
+handleScroll(); // 초기 상태 적용
+
+// 위로 버튼 클릭
+toTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // 모바일 메뉴 열려있으면 닫기
+  document.body.classList.remove('menu-open');
+});
+
+// ═══════════════════════════════════════════════════════════
+// Mobile Menu — 햄버거 토글
+// ═══════════════════════════════════════════════════════════
+const navToggle = document.getElementById('navToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+
+navToggle.addEventListener('click', () => {
+  const isOpen = document.body.classList.toggle('menu-open');
+  navToggle.setAttribute('aria-expanded', String(isOpen));
+  navToggle.setAttribute('aria-label', isOpen ? '메뉴 닫기' : '메뉴 열기');
+  mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+});
+
+// 모바일 메뉴 항목 클릭 시 자동 닫기
+document.querySelectorAll('.mobile-menu-link').forEach(link => {
+  link.addEventListener('click', () => {
+    document.body.classList.remove('menu-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    navToggle.setAttribute('aria-label', '메뉴 열기');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+  });
+});
+
+// ESC 키로 모바일 메뉴 닫기
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.body.classList.contains('menu-open')) {
+    document.body.classList.remove('menu-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    navToggle.setAttribute('aria-label', '메뉴 열기');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
 // FAQ Accordion
 // ═══════════════════════════════════════════════════════════
 document.querySelectorAll('.faq-item').forEach(item => {
@@ -1934,7 +2326,7 @@ document.querySelectorAll('.beta-form').forEach(form => {
 });
 
 // ═══════════════════════════════════════════════════════════
-// Smooth scroll for anchor links
+// Smooth scroll for anchor links — 고정 헤더 보정 포함
 // ═══════════════════════════════════════════════════════════
 document.querySelectorAll('a[href^="#"]').forEach(link => {
   link.addEventListener('click', e => {
@@ -1943,7 +2335,28 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
     const target = document.querySelector(href);
     if (target) {
       e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // #top 클릭 시 — 페이지 맨 위로
+      if (href === '#top') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      // 모바일 메뉴 열려있으면 먼저 닫고, 닫는 애니메이션 후 스크롤
+      const isMenuOpen = document.body.classList.contains('menu-open');
+      const delay = isMenuOpen ? 250 : 0;
+
+      setTimeout(() => {
+        // 고정 헤더(약 60~70px) 보정 — 섹션이 헤더 아래에서 시작되도록
+        const headerOffset = 70;
+        const elementPosition = target.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }, delay);
     }
   });
 });
