@@ -4075,7 +4075,7 @@ window.closeAlerts = function(){ document.getElementById('viewAlerts').classList
 function showView(id){ var v=document.getElementById(id); if(v) v.classList.add('show'); }
 function hideView(id){ var v=document.getElementById(id); if(v) v.classList.remove('show'); }
 function goHome(){ var vs=document.querySelectorAll('.viewport .view.show'); for(var i=0;i<vs.length;i++) vs[i].classList.remove('show'); }
-console.log('%cSS-BUILD domain v47 (2026-05-27)','color:#C9A96E;font-weight:bold;font-size:13px');
+console.log('%cSS-BUILD route v48 (2026-05-27)','color:#C9A96E;font-weight:bold;font-size:13px');
 function showToast(m){ var t=document.getElementById('toast'); if(!t) return; t.textContent=m; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove('show'); },1600); }
 function toggleMaster(){ var m=document.getElementById('masterBox'); if(m) m.style.display=(!m.style.display||m.style.display==='none')?'flex':'none'; }
 function unlockPw(){ var l=document.getElementById('pwLock'), v=document.getElementById('pwVault'); if(l)l.style.display='none'; if(v)v.style.display='flex'; var b=document.getElementById('pwLockBtn'); if(b)b.textContent='🔓'; renderPw(); }
@@ -5488,6 +5488,15 @@ vaultLoad(false);
 mbLoad();
 subLoad();
 ssVaultRefresh();
+
+/* URL 경로 라우팅: 지인이 secretsafe.co.kr/join 으로 직접 들어오면 채널 개설 화면을 띄움 */
+(function(){
+  try{
+    var p=(location.pathname||'').replace(/\/+$/,'');
+    if(p==='/join'){ joinReset(); showView('viewJoin'); }
+    else if(/^\/@/.test(p)){ showView('viewChat'); }
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
