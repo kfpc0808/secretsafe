@@ -1798,6 +1798,18 @@ body.theme-vault{background:#161B2A}
 .lr-reveal{animation:lrReveal .5s cubic-bezier(.3,.7,.3,1)}
 @keyframes lrReveal{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
 
+/* 채널 개설 완료 — 홈 화면 바로가기 안내 */
+.jn-pwa{margin-top:18px; padding:15px 15px 13px; border-radius:14px; background:linear-gradient(135deg,var(--accent-bg),rgba(201,169,110,.08)); border:1px solid var(--accent-soft)}
+.jn-pwa-hd{display:flex; gap:11px; align-items:flex-start}
+.jn-pwa-hd .jp-ic{font-size:22px; flex-shrink:0; line-height:1.25}
+.jn-pwa-hd .jp-t{font-size:13.5px; font-weight:800; color:var(--ink)}
+.jn-pwa-hd .jp-d{font-size:11px; color:var(--mute); margin-top:3px; line-height:1.5}
+.jn-pwa-steps{margin-top:12px; display:flex; flex-direction:column; gap:7px}
+.jp-row{font-size:11.5px; color:var(--ink-soft); padding:9px 11px; border-radius:9px; background:var(--btn-bg); border:1px solid var(--line-soft); line-height:1.45}
+.jp-row b{color:var(--accent-deep); font-weight:800}
+.jp-row .jp-os{font-weight:800; color:var(--ink)}
+.jp-row.hi{background:var(--accent-bg); border-color:var(--accent); box-shadow:0 2px 8px rgba(201,169,110,.18)}
+
 /* ── 채널 공유 + 개설(viewJoin) ── */
 #viewJoin{transform:translateX(100%); transition:transform .34s cubic-bezier(.3,.7,.3,1); box-shadow:-10px 0 26px rgba(0,0,0,.16); z-index:80}
 #viewJoin.show{transform:none}
@@ -1873,6 +1885,7 @@ function screenHTML(){
     <div class="appheader">
       <div class="brand"><div class="brand-logo">SS</div><div class="brand-tx"><div class="label">My Secret Safe</div><div class="name">Secret Safe</div></div></div>
       <div class="h-acts">
+        <div class="h-btn" onclick="shareChannel()" title="채널 공유">🔗</div>
         <div class="theme-badge" id="themeBadge">◐</div>
         <div class="h-btn" onclick="openAlerts()">🔔<span class="hb-badge">7</span></div>
       </div>
@@ -1909,12 +1922,6 @@ function screenHTML(){
             <div class="nl-tx"><div class="t">오늘의 행운 뽑기</div><div class="d">5장 중 한 장 · 재물운과 오늘의 한마디</div></div>
           </div>
           <span class="nl-go" id="nlGo">뽑기 ›</span>
-        </div>
-
-        <div class="nh-share" onclick="openShareSheet()">
-          <div class="nhs-ic">🔗</div>
-          <div class="nhs-tx"><div class="t">비밀금고 채널 공유하기</div><div class="d">받은 분은 아이디만 입력하면 1분 만에 채널 개설</div></div>
-          <span class="nhs-go">공유 ›</span>
         </div>
 
         <div class="seclabel">데일리 리포트</div>
@@ -2233,6 +2240,15 @@ function joinHTML(){ return `
         <div class="jn-sub center">아래 주소를 누르면 바로 입장해요</div>
         <div class="jn-addr-chip" id="joinAddrChip" onclick="joinEnter()">secretsafe.co.kr/@아이디 ›</div>
         <button class="jn-btn" onclick="joinEnter()">내 채널 입장하기</button>
+
+        <div class="jn-pwa">
+          <div class="jn-pwa-hd"><span class="jp-ic">📲</span><div class="jp-tx"><div class="jp-t">홈 화면에 추가하고 앱처럼 쓰세요</div><div class="jp-d">다음부턴 아이콘 한 번으로 바로 열려요 · 매일 행운·보안채팅·금고를 빠르게</div></div></div>
+          <div class="jn-pwa-steps" id="jnPwaSteps">
+            <div class="jp-row" data-os="ios"><span class="jp-os">🍎 아이폰</span> 하단 <b>공유</b> 버튼 → <b>홈 화면에 추가</b></div>
+            <div class="jp-row" data-os="and"><span class="jp-os">🤖 안드로이드</span> 우측 상단 <b>⋮ 메뉴</b> → <b>홈 화면에 추가</b></div>
+          </div>
+        </div>
+
         <div class="jn-note">💡 이 주소를 담당자에게 알려주면 보안채팅으로 연결돼요</div>
       </div>
     </div>`;
@@ -4071,8 +4087,18 @@ function ssCopy(text, okMsg){
     else { fallback(); }
   }catch(e){ fallback(); }
 }
-function shareCopyLink(){ var t=document.getElementById('shiLink'); var link=t?t.textContent.trim():'secretsafe.co.kr/join'; if(link.indexOf('http')!==0) link='https://'+link; ssCopy(link, '초대 링크를 복사했어요'); }
+function shareCopyLink(){ ssCopy(_shareUrl(), '초대 링크를 복사했어요 · 담당자 연결 포함'); }
 function sharePreviewJoin(){ shareClose(); joinReset(); showView('viewJoin'); }
+
+/* 채널 공유 — fc(컨설턴트 핸들) 자동 첨부 + 카톡 네이티브 공유 */
+var SS_FC='gildong';   /* ← 운영 시 실제 컨설턴트 핸들로 교체 */
+function _shareUrl(){ var fc=(typeof SS_FC!=='undefined'&&SS_FC)?SS_FC:'gildong'; return 'https://secretsafe.co.kr/join?fc='+encodeURIComponent(fc); }
+function shareChannel(){
+  var url=_shareUrl();
+  var txt='비밀금고 — 내 기기에만 저장되는 안전한 금융 채널이에요. 아이디만 입력하면 1분 만에 내 채널이 열려요.';
+  if(navigator.share){ navigator.share({title:'비밀금고 채널 초대', text:txt, url:url}).catch(function(){}); }
+  else { openShareSheet(); }   /* 데스크톱: 미리보기·복사 모달 */
+}
 function joinReset(){
   var idel=document.getElementById('joinId'); if(idel) idel.value='';
   var p=document.getElementById('joinPhone'); if(p) p.value='';
@@ -4097,6 +4123,17 @@ function joinToStep(n){
   var b1=document.getElementById('jnBar1'), b2=document.getElementById('jnBar2');
   if(b1) b1.classList.toggle('on', n>=2); if(b2) b2.classList.toggle('on', n>=3);
   var body=document.querySelector('#viewJoin .join-body'); if(body) body.scrollTop=0;
+  if(n===3){ try{ joinPwaHint(); }catch(e){} }
+}
+function joinPwaHint(){
+  var ua=navigator.userAgent||'', ios=/iPhone|iPad|iPod/i.test(ua), and=/Android/i.test(ua);
+  var box=document.getElementById('jnPwaSteps'); if(!box) return;
+  var rows=box.querySelectorAll('.jp-row');
+  for(var i=0;i<rows.length;i++){
+    rows[i].classList.remove('hi');
+    var os=rows[i].getAttribute('data-os');
+    if((ios&&os==='ios')||(and&&os==='and')) rows[i].classList.add('hi');
+  }
 }
 function joinSendOtp(){
   var ow=document.getElementById('joinOtpWrap'); if(ow) ow.style.display='block';
@@ -4237,13 +4274,13 @@ function _luckRenderResult(r){
 function shareLuck(){
   var r=_luckTodayResult(); var s=r?_luckById(r.id):null;
   var txt = s ? ('[오늘의 행운] '+s.lv+' '+_luckStars(s.st)+'\n'+s.head+'\n\n비밀금고에서 내 행운도 뽑아보기 →') : '비밀금고에서 오늘의 행운을 뽑아보세요!';
-  var fc=(typeof SS_FC!=='undefined')?SS_FC:'jeongminsu';
+  var fc=(typeof SS_FC!=='undefined')?SS_FC:'gildong';
   var url='https://secretsafe.co.kr/join?fc='+encodeURIComponent(fc);
   if(navigator.share){ navigator.share({title:'오늘의 행운', text:txt, url:url}).catch(function(){}); }
   else { try{ if(navigator.clipboard) navigator.clipboard.writeText(txt+'\n'+url); }catch(e){} showToast('행운 메시지가 복사되었어요'); }
 }
 
-console.log('%cSS-BUILD luck-150 v53 (2026-05-28)','color:#C9A96E;font-weight:bold;font-size:13px');
+console.log('%cSS-BUILD join-share v54 (2026-05-28)','color:#C9A96E;font-weight:bold;font-size:13px');
 function showToast(m){ var t=document.getElementById('toast'); if(!t) return; t.textContent=m; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove('show'); },1600); }
 function toggleMaster(){ var m=document.getElementById('masterBox'); if(m) m.style.display=(!m.style.display||m.style.display==='none')?'flex':'none'; }
 function unlockPw(){ var l=document.getElementById('pwLock'), v=document.getElementById('pwVault'); if(l)l.style.display='none'; if(v)v.style.display='flex'; var b=document.getElementById('pwLockBtn'); if(b)b.textContent='🔓'; renderPw(); }
