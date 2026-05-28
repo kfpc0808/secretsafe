@@ -1896,6 +1896,36 @@ body.theme-vault{background:#161B2A}
 </div>
 
 <script src="luck_data.js"></script>
+
+<!-- ===== Firebase 연결 (ss_referrals 기록용 · jarvia-platform/javia-db) ===== -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, addDoc, doc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+const FC={apiKey:"AIzaSyBD9p-bf162RiiD1Y3BsY-NvbYjpOSrzmg",authDomain:"jarvia-platform.firebaseapp.com",projectId:"jarvia-platform",storageBucket:"jarvia-platform.firebasestorage.app",messagingSenderId:"388025068900",appId:"1:388025068900:web:09ba8e12e9e9e2ec49de71"};
+const app=initializeApp(FC);
+const db=getFirestore(app,'javia-db');   // 기본 DB 아님 — 이름 지정 필수
+// 채널 개설 시 가입 기록 생성 → 문서 id 반환
+window.ssSaveReferral=async function(channelId,fc){
+  try{
+    const r=await addDoc(collection(db,'ss_referrals'),{
+      channelId:String(channelId||'').slice(0,40),
+      fc:String(fc||'').slice(0,40),
+      status:'opened',
+      age:null, job:null, interests:[],
+      createdAt:serverTimestamp()
+    });
+    return r.id;
+  }catch(e){ console.warn('[SS] ssSaveReferral 실패:',e&&e.code,e&&e.message); return null; }
+};
+// 이용자 설정(연령/직업/관심사/상태) 수정 — fc/channelId/createdAt은 건드리지 않음
+window.ssUpdateReferral=async function(docId,patch){
+  try{ await updateDoc(doc(db,'ss_referrals',docId),patch); return true; }
+  catch(e){ console.warn('[SS] ssUpdateReferral 실패:',e&&e.code,e&&e.message); return false; }
+};
+window.SS_DB_READY=true;
+console.log('%cSS-FIREBASE ready (javia-db / ss_referrals)','color:#2EA86B;font-weight:bold');
+</script>
+
 <script>
 function screenHTML(){
   return `
@@ -4141,7 +4171,23 @@ function joinToStep(n){
   var b1=document.getElementById('jnBar1'), b2=document.getElementById('jnBar2');
   if(b1) b1.classList.toggle('on', n>=2); if(b2) b2.classList.toggle('on', n>=3);
   var body=document.querySelector('#viewJoin .join-body'); if(body) body.scrollTop=0;
-  if(n===3){ try{ joinPwaHint(); }catch(e){} }
+  if(n===3){ try{ joinPwaHint(); }catch(e){} try{ ssRecordOpen(); }catch(e){} }
+}
+/* 가입 경로(fc) — 공유 링크 ?fc= 우선, 없으면 SS_FC 기본값 */
+function ssGetFc(){
+  try{ var p=new URLSearchParams(location.search).get('fc'); if(p&&p.trim()) return p.trim(); }catch(e){}
+  return (typeof SS_FC!=='undefined'&&SS_FC)?SS_FC:'gildong';
+}
+/* 채널 개설 완료 시 ss_referrals 기록 (1회만) */
+function ssRecordOpen(){
+  try{
+    if(localStorage.getItem('ss_ref_doc')) return;              // 이미 기록됨
+    var chId=((document.getElementById('joinId')||{}).value||'').trim(); if(!chId) return;
+    if(typeof window.ssSaveReferral!=='function'){ console.warn('[SS] Firebase 준비 안 됨'); return; }
+    window.ssSaveReferral(chId, ssGetFc()).then(function(docId){
+      if(docId){ localStorage.setItem('ss_ref_doc',docId); localStorage.setItem('ss_ref_ch',chId); console.log('[SS] 가입 기록 완료:',docId); }
+    });
+  }catch(e){ console.warn('[SS] ssRecordOpen 오류',e); }
 }
 function joinPwaHint(){
   var ua=navigator.userAgent||'', ios=/iPhone|iPad|iPod/i.test(ua), and=/Android/i.test(ua);
@@ -4298,7 +4344,7 @@ function shareLuck(){
   else { try{ if(navigator.clipboard) navigator.clipboard.writeText(txt+'\n'+url); }catch(e){} showToast('행운 메시지가 복사되었어요'); }
 }
 
-console.log('%cSS-BUILD og-card v55 (2026-05-28)','color:#C9A96E;font-weight:bold;font-size:13px');
+console.log('%cSS-BUILD ss-ref-write v56 (2026-05-28)','color:#C9A96E;font-weight:bold;font-size:13px');
 function showToast(m){ var t=document.getElementById('toast'); if(!t) return; t.textContent=m; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove('show'); },1600); }
 function toggleMaster(){ var m=document.getElementById('masterBox'); if(m) m.style.display=(!m.style.display||m.style.display==='none')?'flex':'none'; }
 function unlockPw(){ var l=document.getElementById('pwLock'), v=document.getElementById('pwVault'); if(l)l.style.display='none'; if(v)v.style.display='flex'; var b=document.getElementById('pwLockBtn'); if(b)b.textContent='🔓'; renderPw(); }
