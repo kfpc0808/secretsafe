@@ -1734,6 +1734,70 @@ body.theme-vault{background:#161B2A}
   body.theme-vault{background:radial-gradient(ellipse at 50% 0%, #283150 0%, #1C2336 55%, #14192A 100%)}
   body.theme-vault .phone{box-shadow:0 30px 80px rgba(0,0,0,.55)}
 }
+/* ── 오늘의 행운 (홈 진입카드 + viewLuck) ── */
+.nh-luck{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; padding:15px 16px; border-radius:16px; cursor:pointer; background:linear-gradient(120deg,var(--accent-bg),rgba(201,169,110,.10)); border:1px solid var(--accent-soft); position:relative; overflow:hidden}
+.nh-luck::after{content:''; position:absolute; inset:0; border-radius:16px; border:1.5px solid transparent; background:linear-gradient(120deg,rgba(201,169,110,.5),rgba(220,195,148,0)) border-box; -webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; animation:nlPulse 2.6s ease-in-out infinite}
+@keyframes nlPulse{0%,100%{opacity:.35} 50%{opacity:1}}
+.nh-luck:active{transform:scale(.995)}
+.nh-luck .nl-left{display:flex; align-items:center; gap:12px; min-width:0}
+.nh-luck .nl-ic{width:40px; height:40px; flex-shrink:0; border-radius:12px; background:linear-gradient(135deg,#2EA86B,#1C7A4D); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 4px 10px rgba(28,122,77,.28)}
+.nh-luck .nl-tx{min-width:0}
+.nh-luck .nl-tx .t{font-size:13.5px; font-weight:800; color:var(--ink)}
+.nh-luck .nl-tx .d{font-size:11px; color:var(--mute); margin-top:2px}
+.nh-luck .nl-go{font-size:12px; font-weight:800; color:var(--accent-deep); flex-shrink:0}
+
+#viewLuck{transform:translateX(100%); transition:transform .34s cubic-bezier(.3,.7,.3,1); box-shadow:-10px 0 26px rgba(0,0,0,.16); z-index:16}
+#viewLuck.show{transform:none}
+.luck-hd{display:flex; align-items:center; gap:10px}
+.luck-hd .lk-logo{font-family:var(--serif-h); font-weight:700; font-size:21px; background:linear-gradient(135deg,#F8EBC2,#E4C075); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+.luck-hd .lk-title{font-size:15px; font-weight:800; color:var(--ink)}
+.luck-body{padding:20px 20px 30px; overflow-y:auto}
+
+/* 카드 뽑기 화면 */
+.lk-date{font-size:11.5px; color:var(--mute); font-weight:700; text-align:center}
+.lk-h{font-family:var(--serif-h); font-size:21px; font-weight:600; color:var(--ink); margin-top:8px; text-align:center}
+.lk-sub{font-size:12px; color:var(--mute); margin-top:8px; line-height:1.5; text-align:center}
+.lk-cards{display:flex; justify-content:center; align-items:flex-end; margin-top:40px; padding:0 6px; min-height:150px}
+.lk-card{width:62px; height:96px; border-radius:14px; background:linear-gradient(155deg,#222840,#13182A); display:flex; align-items:center; justify-content:center; border:1.5px solid var(--accent-soft); box-shadow:0 10px 22px rgba(30,24,16,.22); transform-origin:50% 95%; cursor:pointer; transition:transform .22s cubic-bezier(.3,.7,.3,1), box-shadow .22s}
+.lk-card .lkc-mark{font-family:var(--serif-h); font-size:26px; color:var(--accent-soft); opacity:.9}
+.lk-card:nth-child(1){transform:rotate(-14deg) translateY(10px)}
+.lk-card:nth-child(2){transform:rotate(-7deg) translateY(3px); margin-left:-12px}
+.lk-card:nth-child(3){transform:rotate(0); margin-left:-12px; z-index:1}
+.lk-card:nth-child(4){transform:rotate(7deg) translateY(3px); margin-left:-12px}
+.lk-card:nth-child(5){transform:rotate(14deg) translateY(10px); margin-left:-12px}
+.lk-card:hover, .lk-card:active{transform:translateY(-12px) rotate(0) scale(1.05); box-shadow:0 18px 34px rgba(30,24,16,.30); z-index:5}
+.lk-pick-foot{font-size:11px; color:var(--mute); text-align:center; margin-top:42px; line-height:1.5}
+
+/* 결과 화면 (6단) */
+.lr-top{display:flex; align-items:center; justify-content:center; gap:10px; padding-bottom:14px; border-bottom:1px solid var(--line-soft)}
+.lr-lv{font-size:14px; font-weight:800; color:var(--ink)}
+.lr-st{font-size:13px; color:#E0A93C; letter-spacing:1px}
+.lr-head{font-family:var(--serif-h); font-size:19px; font-weight:600; color:var(--ink); line-height:1.45; margin-top:16px; text-align:center; letter-spacing:-.01em}
+.lr-scene{font-size:13px; color:var(--ink-soft); line-height:1.75; margin-top:14px; padding:0 2px}
+.lr-action{display:flex; gap:11px; margin-top:18px; padding:13px 14px; border-radius:13px; background:var(--accent-bg); border:1px solid var(--accent-soft); align-items:flex-start}
+.lr-action .ic{font-size:17px; flex-shrink:0; line-height:1.4}
+.lr-action .tx{flex:1; min-width:0}
+.lr-action .l{font-size:10.5px; font-weight:800; color:var(--accent-deep); letter-spacing:.04em}
+.lr-action .v{font-size:12.5px; color:var(--ink-soft); margin-top:3px; line-height:1.55}
+.lr-num-key{display:flex; gap:10px; margin-top:14px; align-items:stretch}
+.lr-num{flex:1; padding:14px 12px; border-radius:13px; background:linear-gradient(155deg,#222840,#161A29); text-align:center; box-shadow:0 8px 18px rgba(30,24,16,.18)}
+.lr-num .l{font-size:9.5px; font-weight:800; letter-spacing:.12em; color:var(--accent-soft); text-transform:uppercase}
+.lr-num .v{font-family:var(--serif-h); font-size:36px; font-weight:700; line-height:1; margin-top:4px; background:linear-gradient(135deg,#F8EBC2,#E4C075); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+.lr-key{flex:1; padding:14px 12px; border-radius:13px; background:linear-gradient(155deg,var(--accent-bg),#F0E2BD); border:1px solid var(--accent-soft); text-align:center; display:flex; flex-direction:column; justify-content:center}
+.lr-key .l{font-size:9.5px; font-weight:800; letter-spacing:.12em; color:var(--accent-deep); text-transform:uppercase}
+.lr-key .v{font-family:var(--serif-h); font-size:22px; font-weight:600; color:var(--accent-deep); margin-top:3px; line-height:1.2}
+.lr-mini{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px}
+.lr-mini .m{padding:10px 11px; border-radius:11px; background:var(--btn-bg); border:1px solid var(--line-soft); display:flex; align-items:baseline; justify-content:space-between; gap:8px}
+.lr-mini .m .l{font-size:10px; color:var(--mute); font-weight:700}
+.lr-mini .m .v{font-size:12.5px; color:var(--accent-deep); font-weight:800}
+.lr-tomorrow{margin-top:14px; padding:12px 13px; border-radius:11px; background:rgba(34,40,64,.06); border:1px dashed rgba(34,40,64,.18); font-size:11.5px; color:var(--ink-soft); line-height:1.55; text-align:center}
+.lr-tomorrow b{color:#222840; font-weight:800; letter-spacing:.03em}
+.lk-share{width:100%; margin-top:16px; border:0; border-radius:13px; padding:14px 0; font-family:var(--sans); font-size:14px; font-weight:800; color:#2b2622; background:linear-gradient(135deg,var(--accent),var(--accent-deep)); box-shadow:0 6px 16px rgba(139,111,63,.30); cursor:pointer}
+.lk-share:active{transform:scale(.99)}
+.lk-foot{font-size:11px; color:var(--mute); text-align:center; margin-top:13px; line-height:1.5}
+.lr-reveal{animation:lrReveal .5s cubic-bezier(.3,.7,.3,1)}
+@keyframes lrReveal{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+
 /* ── 채널 공유 + 개설(viewJoin) ── */
 #viewJoin{transform:translateX(100%); transition:transform .34s cubic-bezier(.3,.7,.3,1); box-shadow:-10px 0 26px rgba(0,0,0,.16); z-index:80}
 #viewJoin.show{transform:none}
@@ -1801,6 +1865,7 @@ body.theme-vault{background:#161B2A}
   <div class="screen"></div>
 </div>
 
+<script src="luck_data.js"></script>
 <script>
 function screenHTML(){
   return `
@@ -1836,6 +1901,14 @@ function screenHTML(){
             <span class="shf-new" onclick="showView('viewAddFriend')">+ 새 연결</span>
           </div>
           <div class="sh-trust"><span>🔒 종단간 암호화</span><span>🚫 서버 미저장</span><span>💨 창 닫으면 소멸</span></div>
+        </div>
+
+        <div class="nh-luck" onclick="openLuck()">
+          <div class="nl-left">
+            <div class="nl-ic">🍀</div>
+            <div class="nl-tx"><div class="t">오늘의 행운 뽑기</div><div class="d">5장 중 한 장 · 재물운과 오늘의 한마디</div></div>
+          </div>
+          <span class="nl-go" id="nlGo">뽑기 ›</span>
         </div>
 
         <div class="nh-share" onclick="openShareSheet()">
@@ -3896,6 +3969,7 @@ document.querySelector('.screen').innerHTML =
     '<div class="view" id="viewMbtiTest">' + mbtiTestHTML() + '</div>' +
     '<div class="view" id="viewMbtiMatch">' + mbtiMatchHTML() + '</div>' +
     '<div class="view" id="viewJoin">' + joinHTML() + '</div>' +
+    '<div class="view" id="viewLuck">' + luckHTML() + '</div>' +
   '</div>' +
   '<div class="nav">' +
     '<div class="navbrand"><span class="lab">My Secret Safe</span><span class="nm"><em>길동</em>의 Safe</span></div>' +
@@ -4075,7 +4149,101 @@ window.closeAlerts = function(){ document.getElementById('viewAlerts').classList
 function showView(id){ var v=document.getElementById(id); if(v) v.classList.add('show'); }
 function hideView(id){ var v=document.getElementById(id); if(v) v.classList.remove('show'); }
 function goHome(){ var vs=document.querySelectorAll('.viewport .view.show'); for(var i=0;i<vs.length;i++) vs[i].classList.remove('show'); }
-console.log('%cSS-BUILD route v48 (2026-05-27)','color:#C9A96E;font-weight:bold;font-size:13px');
+
+/* ===== 오늘의 행운 (덱셔플 무반복 · 150개 풀) ===== */
+var LUCK_DECK_KEY='ss_luck_deck';      // 남은 셔플 덱(스토리 id 큐) — 하루 1장씩 소진
+var LUCK_PICK_PRE='ss_luck_pick_';     // +YYYYMMDD → 오늘 결과(자정까지 고정)
+
+function _luckDateKey(){ var d=new Date(); return ''+d.getFullYear()+('0'+(d.getMonth()+1)).slice(-2)+('0'+d.getDate()).slice(-2); }
+function _luckDateLabel(){ var d=new Date(), wd=['일','월','화','수','목','금','토']; return (d.getMonth()+1)+'월 '+d.getDate()+'일 '+wd[d.getDay()]+'요일'; }
+function _luckLoad(k){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):null; }catch(e){ return null; } }
+function _luckSave(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _luckById(id){ var a=window.LUCK_STORIES||[]; for(var i=0;i<a.length;i++){ if(a[i].id===id) return a[i]; } return null; }
+function _luckStars(n){ var s=''; for(var i=0;i<5;i++) s+=(i<n?'★':'☆'); return s; }
+function _luckAllIds(){ return (window.LUCK_STORIES||[]).map(function(s){return s.id;}); }
+function _luckShuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+
+/* 남은 덱 가져오기 — 비었으면 150장 전체를 새로 셔플(반복 시작점) */
+function _luckDeck(){
+  var d=_luckLoad(LUCK_DECK_KEY);
+  if(!d||!d.length){ d=_luckShuffle(_luckAllIds()); _luckSave(LUCK_DECK_KEY,d); }
+  return d;
+}
+function _luckTodayResult(){ return _luckLoad(LUCK_PICK_PRE+_luckDateKey()); }
+
+function luckHTML(){ return ''
+  +'<div class="statusbar"><span>9:41</span><span>●●● 100%</span></div>'
+  +'<div class="appheader luck-hd">'
+  +'<span class="back-btn" onclick="goHome()">‹</span>'
+  +'<span class="lk-logo">SS</span>'
+  +'<span class="lk-title">오늘의 행운</span>'
+  +'</div>'
+  +'<div class="body luck-body" id="luckInner"></div>';
+}
+
+function openLuck(){
+  if(!window.LUCK_STORIES||!window.LUCK_STORIES.length){ showToast('행운 데이터를 불러오지 못했어요'); return; }
+  var r=_luckTodayResult();
+  if(r){ _luckRenderResult(r); } else { _luckRenderPick(); }
+  showView('viewLuck');
+}
+
+function _luckRenderPick(){
+  var el=document.getElementById('luckInner'); if(!el) return;
+  var cards='';
+  for(var i=0;i<5;i++){ cards+='<div class="lk-card" onclick="luckDraw('+i+')"><span class="lkc-mark">?</span></div>'; }
+  el.innerHTML=''
+    +'<div class="lk-date">'+_luckDateLabel()+'</div>'
+    +'<div class="lk-h">오늘의 행운을 뽑아보세요</div>'
+    +'<div class="lk-sub">5장 중 마음이 가는 한 장을 탭하세요<br>오늘의 운세는 자정까지 고정돼요</div>'
+    +'<div class="lk-cards">'+cards+'</div>'
+    +'<div class="lk-pick-foot">🍀 매일 자정이 지나면 새 카드 5장이 펼쳐져요</div>';
+}
+
+function luckDraw(idx){
+  var dk=_luckDateKey();
+  var r=_luckTodayResult();
+  if(!r){
+    var deck=_luckDeck();
+    var id=deck.shift();                 // 덱 맨 앞 1장 소진 (무반복 핵심)
+    if(!deck.length){ deck=_luckShuffle(_luckAllIds()); }   // 150장 다 봄 → 새 덱 셔플
+    _luckSave(LUCK_DECK_KEY,deck);
+    var cols=window.LUCK_COLORS||['골드'], tms=window.LUCK_TIMES||['정오 무렵'];
+    r={ id:id, num:1+Math.floor(Math.random()*45),
+        color:cols[Math.floor(Math.random()*cols.length)],
+        time:tms[Math.floor(Math.random()*tms.length)] };
+    _luckSave(LUCK_PICK_PRE+dk,r);
+  }
+  _luckRenderResult(r);
+}
+
+function _luckRenderResult(r){
+  var el=document.getElementById('luckInner'); if(!el) return;
+  var s=_luckById(r.id); if(!s){ _luckRenderPick(); return; }
+  el.innerHTML=''
+    +'<div class="lr-reveal">'
+    +'<div class="lr-top"><span class="lr-lv">'+s.lv+'</span><span class="lr-st">'+_luckStars(s.st)+'</span></div>'
+    +'<div class="lr-head">'+s.head+'</div>'
+    +'<div class="lr-scene">'+s.scene+'</div>'
+    +'<div class="lr-action"><span class="ic">💡</span><div class="tx"><div class="l">오늘 하나만</div><div class="v">'+s.act+'</div></div></div>'
+    +'<div class="lr-num-key"><div class="lr-num"><div class="l">행운 숫자</div><div class="v">'+r.num+'</div></div><div class="lr-key"><div class="l">오늘의 키워드</div><div class="v">'+s.key+'</div></div></div>'
+    +'<div class="lr-mini"><div class="m"><span class="l">행운의 색</span><span class="v">'+r.color+'</span></div><div class="m"><span class="l">행운의 시간</span><span class="v">'+r.time+'</span></div></div>'
+    +'<div class="lr-tomorrow"><b>✨ 내일의 힌트</b> &nbsp;'+s.tmrw+'</div>'
+    +'<button class="lk-share" onclick="shareLuck()">💬 카톡으로 행운 나누기</button>'
+    +'<div class="lk-foot">✨ 오늘 운세는 자정까지 고정 · 내일 새 카드 5장 🍀</div>'
+    +'</div>';
+}
+
+function shareLuck(){
+  var r=_luckTodayResult(); var s=r?_luckById(r.id):null;
+  var txt = s ? ('[오늘의 행운] '+s.lv+' '+_luckStars(s.st)+'\n'+s.head+'\n\n비밀금고에서 내 행운도 뽑아보기 →') : '비밀금고에서 오늘의 행운을 뽑아보세요!';
+  var fc=(typeof SS_FC!=='undefined')?SS_FC:'jeongminsu';
+  var url='https://secretsafe.co.kr/join?fc='+encodeURIComponent(fc);
+  if(navigator.share){ navigator.share({title:'오늘의 행운', text:txt, url:url}).catch(function(){}); }
+  else { try{ if(navigator.clipboard) navigator.clipboard.writeText(txt+'\n'+url); }catch(e){} showToast('행운 메시지가 복사되었어요'); }
+}
+
+console.log('%cSS-BUILD luck-150 v53 (2026-05-28)','color:#C9A96E;font-weight:bold;font-size:13px');
 function showToast(m){ var t=document.getElementById('toast'); if(!t) return; t.textContent=m; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove('show'); },1600); }
 function toggleMaster(){ var m=document.getElementById('masterBox'); if(m) m.style.display=(!m.style.display||m.style.display==='none')?'flex':'none'; }
 function unlockPw(){ var l=document.getElementById('pwLock'), v=document.getElementById('pwVault'); if(l)l.style.display='none'; if(v)v.style.display='flex'; var b=document.getElementById('pwLockBtn'); if(b)b.textContent='🔓'; renderPw(); }
