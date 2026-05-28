@@ -8,6 +8,24 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>길동의 Secret Safe</title>
+
+<!-- ===== 공유 카드(Open Graph) — 카카오톡/페북/문자 미리보기 ===== -->
+<meta name="description" content="내 기기에만 저장되는 안전한 금융 채널. 아이디만 입력하면 1분 만에 내 채널이 열려요. 종단간 암호화 · 서버 미저장.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="비밀금고 · Secret Safe">
+<meta property="og:title" content="비밀금고 — 내 기기에만 저장되는 안전한 금융 채널">
+<meta property="og:description" content="회사도 못 보는 안전한 금융 채널. 아이디만 입력하면 1분 만에 내 채널이 열려요.">
+<meta property="og:image" content="https://secretsafe.co.kr/og_share_card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="비밀금고 — 내 기기에만 저장되는 안전한 금융 채널">
+<meta property="og:url" content="https://secretsafe.co.kr">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="비밀금고 — 내 기기에만 저장되는 안전한 금융 채널">
+<meta name="twitter:description" content="회사도 못 보는 안전한 금융 채널. 아이디만 입력하면 1분 만에 내 채널이 열려요.">
+<meta name="twitter:image" content="https://secretsafe.co.kr/og_share_card.png">
+<!-- ============================================================ -->
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -4095,8 +4113,8 @@ var SS_FC='gildong';   /* ← 운영 시 실제 컨설턴트 핸들로 교체 */
 function _shareUrl(){ var fc=(typeof SS_FC!=='undefined'&&SS_FC)?SS_FC:'gildong'; return 'https://secretsafe.co.kr/join?fc='+encodeURIComponent(fc); }
 function shareChannel(){
   var url=_shareUrl();
-  var txt='비밀금고 — 내 기기에만 저장되는 안전한 금융 채널이에요. 아이디만 입력하면 1분 만에 내 채널이 열려요.';
-  if(navigator.share){ navigator.share({title:'비밀금고 채널 초대', text:txt, url:url}).catch(function(){}); }
+  /* 메시지는 OG 카드(이미지+제목+설명)가 담당 → 본문 텍스트 생략해 카드를 부각 */
+  if(navigator.share){ navigator.share({title:'비밀금고 채널 초대', url:url}).catch(function(){}); }
   else { openShareSheet(); }   /* 데스크톱: 미리보기·복사 모달 */
 }
 function joinReset(){
@@ -4280,7 +4298,7 @@ function shareLuck(){
   else { try{ if(navigator.clipboard) navigator.clipboard.writeText(txt+'\n'+url); }catch(e){} showToast('행운 메시지가 복사되었어요'); }
 }
 
-console.log('%cSS-BUILD join-share v54 (2026-05-28)','color:#C9A96E;font-weight:bold;font-size:13px');
+console.log('%cSS-BUILD og-card v55 (2026-05-28)','color:#C9A96E;font-weight:bold;font-size:13px');
 function showToast(m){ var t=document.getElementById('toast'); if(!t) return; t.textContent=m; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove('show'); },1600); }
 function toggleMaster(){ var m=document.getElementById('masterBox'); if(m) m.style.display=(!m.style.display||m.style.display==='none')?'flex':'none'; }
 function unlockPw(){ var l=document.getElementById('pwLock'), v=document.getElementById('pwVault'); if(l)l.style.display='none'; if(v)v.style.display='flex'; var b=document.getElementById('pwLockBtn'); if(b)b.textContent='🔓'; renderPw(); }
